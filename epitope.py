@@ -195,14 +195,14 @@ class epitopes:
 ###################################################
 argument = sys.argv
 ## argument[1] == Allele
-## argument[2] == size of Allele
+## argument[2] == size of peptide
 ## argument[3] == inputFileName
 ## argument[4] == patientId
 ep = epitopes()
 
 filepath = os.path.dirname(os.path.realpath(__file__))
 ## Some Constants
-outputFilePath = filepath + "/output/" + argument[4] + "/" + argument[1].replace(":","-") +  "/"
+outputFilePath = filepath + "/output/" + argument[4] + "/" + argument[1] +  "/"
 
 if not os.path.exists(outputFilePath):
 	os.makedirs(outputFilePath)
