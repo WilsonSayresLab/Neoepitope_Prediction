@@ -34,7 +34,6 @@ for key, value in file_hlas_map.items():
      for val in value:
           hlas = val.upper().split("_")
           hla = hlas[0] + "-" + hlas[1] + "*" + hlas[2] + ":" + hlas[3]
-          hla = hla.replace(":","-")
           proc = subprocess.Popen([sys.executable, 'epitope.py', hla, '9', filename, outputFolder + patientID])
           procs.append(proc)
 for proc in procs:

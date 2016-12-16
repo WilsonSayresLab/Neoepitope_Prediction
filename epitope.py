@@ -202,7 +202,7 @@ ep = epitopes()
 
 filepath = os.path.dirname(os.path.realpath(__file__))
 ## Some Constants
-outputFilePath = filepath + "/output/" + argument[4] + "/" + argument[1] +  "/"
+outputFilePath = filepath + "/output/" + argument[4] + "/" + argument[1].replace(":","-") +  "/"
 
 if not os.path.exists(outputFilePath):
 	os.makedirs(outputFilePath)
