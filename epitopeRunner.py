@@ -3,6 +3,7 @@ from os.path import isfile, join, dirname
 import os
 import sys
 import subprocess
+from datetime import datetime
 
 ## Get the current directory
 filepath = os.path.dirname(os.path.realpath(__file__))
@@ -18,6 +19,7 @@ for file in allfiles:
                hlas = line.strip().split("\t")
                file_hlas_map[file].extend(list(set(hlas[1:len(hlas)])))
 
+outputFolder =  str(datetime.utcnow()).replace(" ","-").replace(":","-").replace(".","-") + "/"
 #print file_hlas_map
 procs = []
 for key, value in file_hlas_map.items():
@@ -27,7 +29,7 @@ for key, value in file_hlas_map.items():
      for val in value:
           hlas = val.upper().split("_")
           hla = hlas[0] + "-" + hlas[1] + "*" + hlas[2] + ":" + hlas[3]
-          proc = subprocess.Popen([sys.executable, 'epitope.py', hla, '9', filename, patientID])
+          proc = subprocess.Popen([sys.executable, 'epitope.py', hla, '9', filename, outputFolder + patientID])
           procs.append(proc)
 for proc in procs:
      proc.wait()
