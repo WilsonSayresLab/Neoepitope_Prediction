@@ -268,13 +268,24 @@ if(syfpeithi_map != -1):
 else:
   final_set = set(IEDB_top200).intersection(set(netmhcpan_top200))
 fwrite = open(outputFilePath+'transform_input.csv','w')
-fwrite.write("Epitope,IEDB.Norm,NetMHC.Norm,Syfpethi.Norm,BP Score\n")
+if(syfpeithi_map != -1):
+  fwrite.write("Epitope,IEDB.Norm,NetMHC.Norm,Syfpethi.Norm,BP Score\n")
+else:
+  fwrite.write("Epitope,IEDB.Norm,NetMHC.Norm,BP Score\n")
+
 for val in final_set:
      val = val.replace("'","")
-     bp_score = (IEDB_norm_map[val]  + netmhcpan_norm_map[val] + syfpeithi_norm_map[val] ) / 3 ;
-     bp_key_.append(val)
-     bp_value_.append(bp_score)
-     fwrite.write(val + "," + str(IEDB_norm_map[val]) + "," + str(netmhcpan_norm_map[val]) + "," + str(syfpeithi_norm_map[val]) + "," + str(bp_score) +"\n" )
+     if(syfpeithi_map != -1):
+      bp_score = (IEDB_norm_map[val]  + netmhcpan_norm_map[val] + syfpeithi_norm_map[val] ) / 3 ;
+      bp_key_.append(val)
+      bp_value_.append(bp_score)
+      fwrite.write(val + "," + str(IEDB_norm_map[val]) + "," + str(netmhcpan_norm_map[val]) + "," + str(syfpeithi_norm_map[val]) + "," + str(bp_score) +"\n" )
+     else:
+      bp_score = (IEDB_norm_map[val]  + netmhcpan_norm_map[val]  ) / 2 ;
+      bp_key_.append(val)
+      bp_value_.append(bp_score)
+      fwrite.write(val + "," + str(IEDB_norm_map[val]) + "," + str(netmhcpan_norm_map[val]) + ","  + str(bp_score) +"\n" )
+
 fwrite.close()
 bp_map = dict(zip(bp_key_,bp_value_))
 
