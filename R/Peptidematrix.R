@@ -1,5 +1,4 @@
 args <- commandArgs(trailingOnly = TRUE)
-print (args[1])
 filename = paste(args[1], "transform_input.csv", sep="")
 #data= read.table("H2Db CTL-test.csv",header=T,sep=",")
 #data= read.table("H2Kb eluted-test.csv",header=T,sep=",")
