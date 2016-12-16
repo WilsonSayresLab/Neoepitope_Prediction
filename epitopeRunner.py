@@ -34,6 +34,8 @@ for key, value in file_hlas_map.items():
      for val in value:
           hlas = val.upper().split("_")
           hla = hlas[0] + "-" + hlas[1] + "*" + hlas[2] + ":" + hlas[3]
+          if not os.path.exists(outputFilePath + patientID):
+               os.makedirs(outputFilePath + patientID)
           proc = subprocess.Popen([sys.executable, 'epitope.py', hla, '9', filename, outputFolder + patientID])
           procs.append(proc)
 for proc in procs:
@@ -55,7 +57,6 @@ for key, value in file_hlas_map.items():
                if ">" in line:
                     transcript = line.strip().replace(">","")
                     counter += 1
-                    print transcript
                else:
                     seq = line.strip()
                     counter += 1
@@ -69,7 +70,7 @@ epitope_score_map = dict()
 for key, value in file_hlas_map.items():
      filenameArr = key.split("-")
      patientID = filenameArr[1] +"-"+ filenameArr[2];
-     fwrite = open(outputFilePath+ patientID + "/"+patientID+ '.csv','w')
+     fwrite = open(outputFilePath+ patientID + "/"+patientID+ '.tsv','w')
      for val in value:
           hlas = val.upper().split("_")
           hla = hlas[0] + "-" + hlas[1] + "*" + hlas[2] + ":" + hlas[3]
