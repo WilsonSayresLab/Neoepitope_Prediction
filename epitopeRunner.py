@@ -36,7 +36,7 @@ for key, value in file_hlas_map.items():
           hla = hlas[0] + "-" + hlas[1] + "*" + hlas[2] + ":" + hlas[3]
           if not os.path.exists(outputFilePath + patientID):
                os.makedirs(outputFilePath + patientID)
-          proc = subprocess.Popen([sys.executable, 'epitope.py', hla, '9', filename, outputFolder + patientID])
+          proc = subprocess.Popen([sys.executable, 'epitope.py', hla, '9', filename,  patientID, outputFolder])
           procs.append(proc)
 for proc in procs:
      proc.wait()
