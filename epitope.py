@@ -203,6 +203,7 @@ ep = epitopes()
 
 filepath = os.path.dirname(os.path.realpath(__file__))
 ## Some Constants
+
 outputFilePath = filepath + "/output/" + argument[5] + argument[4] + "/" + argument[1].replace(":","-") +  "/"
 
 if not os.path.exists(outputFilePath):
@@ -300,7 +301,7 @@ commandR= "Rscript "+rFilePath+"/ANN_Immunogenicity.r " + outputFilePath + " "  
 returncode = subprocess.call(commandR,shell=True)
 
 while returncode != 0:
-     print "The ANN did not converge, running the ANN again for" argument[4]+ " - " + argument[1]
+     print "The ANN did not converge, running the ANN again for" +argument[4]+ " - " + argument[1]
      print returncode
      commandR= "Rscript "+rFilePath+"/ANN_Immunogenicity.r " + outputFilePath + " " + rFilePath
      returncode = subprocess.call(commandR,shell=True)
