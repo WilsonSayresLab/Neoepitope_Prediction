@@ -182,13 +182,17 @@ class epitopes:
 ###################################################
      @staticmethod
      def getSeq(file):
+          seqList=[]
           seq=""
           with open(file) as f:
                for line in f:
                           if ">" in line:
                                   continue
                           else:
-                            seq += str(line.strip())
+                            seqList.append(str(line.strip()))
+          seqSet = set(seqList)
+          for s in seqSet:
+            seq += str(s.strip())
           return seq
           
 
@@ -199,6 +203,8 @@ argument = sys.argv
 ## argument[3] = inputFileName
 ## argument[4] = patientId
 ## argument[5] = timestamp of folder
+## argument[6] = syfpeithi allele boolen flag
+
 ep = epitopes()
 
 filepath = os.path.dirname(os.path.realpath(__file__))
@@ -213,7 +219,8 @@ inputFilePath = filepath + "/peptides/"
 outputNetmhcpanFile = outputFilePath + "output_netmhcpan.txt"
 outputIEDBFile = outputFilePath + "output_IEDB.txt"
 rFilePath = filepath + "/R/"
-inputFile = inputFilePath + argument[3]
+inputFile = inputFilePath + argument[4] + ".txt"
+#inputFile = inputFilePath + argument[3]
 #rOutputFilePath = rFilePath + argument[4] + "/"
 #if not os.path.exists(rOutputFilePath):
 #  os.makedirs(ro)
@@ -227,37 +234,41 @@ returncode = subprocess.call(command1,shell=True)
 ###################################################
 # get the Map of key and values
 ###################################################
+print "begining of netmhcpan"
+if(argument[8] == "True"):
+  netmhcpan_top200=[]
+  netmhcpan_map = ep.getMapwithValues(outputNetmhcpanFile)
+  sorted_netmhcpan = sorted(netmhcpan_map.iteritems(),key=operator.itemgetter(1))
+  netmhcpan_top200 = ep.getTop200(sorted_netmhcpan)
+  netmhcpan_norm_map = ep.writeNormFile(rFilePath ,outputFilePath,"NetMHC",netmhcpan_top200,netmhcpan_map)
 
-netmhcpan_top200=[]
-netmhcpan_map = ep.getMapwithValues(outputNetmhcpanFile)
-sorted_netmhcpan = sorted(netmhcpan_map.iteritems(),key=operator.itemgetter(1))
-netmhcpan_top200 = ep.getTop200(sorted_netmhcpan)
-netmhcpan_norm_map = ep.writeNormFile(rFilePath ,outputFilePath,"NetMHC",netmhcpan_top200,netmhcpan_map)
-
+print "END of netmhcpan"
 ###################################################
 # get the Map of key and values
 ###################################################
+print "begining of IEDB"
+if(argument[7] == "True"):
+  IEDB_top200= []
+  IEDB_map = ep.getMapwithValues(outputIEDBFile)
+  sorted_IEDB = sorted(IEDB_map.iteritems(),key=operator.itemgetter(1))
+  IEDB_top200 = ep.getTop200(sorted_IEDB)
+  IEDB_norm_map = ep.writeNormFile(rFilePath, outputFilePath,"IEDB",IEDB_top200,IEDB_map)
 
-IEDB_top200= []
-IEDB_map = ep.getMapwithValues(outputIEDBFile)
-sorted_IEDB = sorted(IEDB_map.iteritems(),key=operator.itemgetter(1))
-IEDB_top200 = ep.getTop200(sorted_IEDB)
-IEDB_norm_map = ep.writeNormFile(rFilePath, outputFilePath,"IEDB",IEDB_top200,IEDB_map)
-
+print "END of IEDB"
 ###################################################
 # get the Map of key and values
 ###################################################
-syfpeithi_top200 = []
-#syfpeithi_map = ep.getMapwithValues("syfpeithi.txt")
-seq = ep.getSeq(inputFile)
-syfpeithi_map = ep.parseSypethi(argument[1],argument[2],seq)
-if(syfpeithi_map != -1):
-
+print "begining of syfpheiti"
+syfpeithi_map= -1
+if(argument[6] == "True"):
+  syfpeithi_top200 = []
+  #syfpeithi_map = ep.getMapwithValues("syfpeithi.txt")
+  seq = ep.getSeq(inputFile)
+  syfpeithi_map = ep.parseSypethi(argument[1],argument[2],seq)
   sorted_syfpeithi = sorted(syfpeithi_map.iteritems(),key=operator.itemgetter(1),reverse=True)
-
   syfpeithi_top200 = ep.getTop200(sorted_syfpeithi)
   syfpeithi_norm_map = ep.writeNormFile(rFilePath, outputFilePath ,"Syfpethi",syfpeithi_top200,syfpeithi_map)
-
+print "end of syfpheiti"
 ###################################################
 ### Final Set with top 200
 ###################################################
@@ -265,28 +276,41 @@ if(syfpeithi_map != -1):
 final_set=[]
 bp_key_ = []
 bp_value_ = []
-if(syfpeithi_map != -1):
+if(argument[6] == "True"):
   final_set = set(IEDB_top200).intersection(set(netmhcpan_top200).intersection(syfpeithi_top200))
 else:
-  final_set = set(IEDB_top200).intersection(set(netmhcpan_top200))
+  print argument[4]+ " - " + argument[1]
+  if len(IEDB_top200) == 0:
+    final_set = set(netmhcpan_top200)
+  else:
+    final_set = set(IEDB_top200).intersection(set(netmhcpan_top200))
 fwrite = open(outputFilePath+'transform_input.csv','w')
-if(syfpeithi_map != -1):
+if(argument[6] == "True"):
   fwrite.write("Epitope,IEDB.Norm,NetMHC.Norm,Syfpethi.Norm,BP Score\n")
 else:
-  fwrite.write("Epitope,IEDB.Norm,NetMHC.Norm,BP Score\n")
+  if len(IEDB_top200) == 0:
+    fwrite.write("Epitope,NetMHC.Norm,BP Score\n")
+  else:
+    fwrite.write("Epitope,IEDB.Norm,NetMHC.Norm,BP Score\n")
 
 for val in final_set:
      val = val.replace("'","")
-     if(syfpeithi_map != -1):
+     if(argument[6] == "True"):
       bp_score = (IEDB_norm_map[val]  + netmhcpan_norm_map[val] + syfpeithi_norm_map[val] ) / 3 ;
       bp_key_.append(val)
       bp_value_.append(bp_score)
       fwrite.write(val + "," + str(IEDB_norm_map[val]) + "," + str(netmhcpan_norm_map[val]) + "," + str(syfpeithi_norm_map[val]) + "," + str(bp_score) +"\n" )
      else:
-      bp_score = (IEDB_norm_map[val]  + netmhcpan_norm_map[val]  ) / 2 ;
-      bp_key_.append(val)
-      bp_value_.append(bp_score)
-      fwrite.write(val + "," + str(IEDB_norm_map[val]) + "," + str(netmhcpan_norm_map[val]) + ","  + str(bp_score) +"\n" )
+      if len(IEDB_top200) == 0:
+        bp_score = netmhcpan_norm_map[val];
+        bp_key_.append(val)
+        bp_value_.append(bp_score)
+        fwrite.write(val + "," +  str(netmhcpan_norm_map[val]) + ","  + str(bp_score) +"\n" )
+      else:
+        bp_score = (IEDB_norm_map[val]  + netmhcpan_norm_map[val]  ) / 2 ;
+        bp_key_.append(val)
+        bp_value_.append(bp_score)
+        fwrite.write(val + "," + str(IEDB_norm_map[val]) + "," + str(netmhcpan_norm_map[val]) + ","  + str(bp_score) +"\n" )
 
 fwrite.close()
 bp_map = dict(zip(bp_key_,bp_value_))
@@ -301,7 +325,7 @@ commandR= "Rscript "+rFilePath+"/ANN_Immunogenicity.r " + outputFilePath + " "  
 returncode = subprocess.call(commandR,shell=True)
 
 while returncode != 0:
-     print "The ANN did not converge, running the ANN again for" +argument[4]+ " - " + argument[1]
+     print "The ANN did not converge, running the ANN again for " + argument[4]+ " - " + argument[1]
      print returncode
      commandR= "Rscript "+rFilePath+"/ANN_Immunogenicity.r " + outputFilePath + " " + rFilePath
      returncode = subprocess.call(commandR,shell=True)
