@@ -183,7 +183,7 @@ for key, value in file_hlas_map.items():
           else:
                value_.append(hla)
 
-          proc = subprocess.Popen([sys.executable, 'epitope_A1.py', hla, '11', filename,  patientID, outputFolder, syfpeithiStr, IEDBStr, netmhcpanStr])
+          proc = subprocess.Popen([sys.executable, 'epitope.py', hla, '11', filename,  patientID, outputFolder, syfpeithiStr, IEDBStr, netmhcpanStr])
           procs.append(proc)
           
 fwrite.close()
