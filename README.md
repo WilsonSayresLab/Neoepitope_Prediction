@@ -4,7 +4,7 @@ Here we will lay out our pipeline for inferring neoepitopes in cancer.
 
 _**Steps**_
 
- Create a direcdory “mkdir NeoepitopePrediction”
+- Create a direcdory “mkdir NeoepitopePrediction”
 - Download the IEDB tool from http://tools.iedb.org/mhci/download/
 - untar the folder 
 		`tar -xvf IEDB_MHC_I-2.15.1.tar.gz`
