@@ -15,7 +15,10 @@
 #--data= read.table("LCMV-NP(1-200) combined hydro.csv",header=T,sep=",")
 args <- commandArgs(trailingOnly = TRUE)
 
-filename = paste(args[1], "IEDB_norm.csv", sep="")
+filename = paste(args[1], "IEDB_norm.", sep="")
+filename = paste(filename,args[2],sep="")
+filename = paste(filename,".csv",sep="")
+
 data= read.table(filename,header=T,sep=",")
 
 # IEDB binding normalization (lower the better)
@@ -48,6 +51,8 @@ data$IEDB.Norm = Norm.IEDB.bind
 #data$ANN.prot.Norm = Norm.ANN.prot
 #data$Comimb.prot.Norm = Norm.Comimb.prot
 #data$Smmpmbc.prot.Norm = Norm.Smmpmbc.prot
-filename = paste(args[1], "IEDB_normalized.txt", sep="")
+filename = paste(args[1], "IEDB_normalized.", sep="")
+filename = paste(filename,args[2],sep="")
+filename = paste(filename,".txt",sep="")
 write.table(data,file =filename, sep = "\t", col.names = NA, qmethod = "double")
 

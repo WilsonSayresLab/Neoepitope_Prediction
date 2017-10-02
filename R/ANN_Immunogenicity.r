@@ -68,7 +68,9 @@ data_training = read.table(filename,header=T,sep=",")
 #data_training = read.table("H2Db full matrix2.csv",header=T,sep=",")
 #data_training = read.table("H2Db training mtrx 23578.csv",header=T,sep=",")
 #data_testing = read.table("H2Db testing mtrx 23578.csv",header=T,sep=",")
-filename = paste(args[1], "ANN_input_final.txt", sep="")
+filename = paste(args[1], "ANN_input_final.", sep="")
+filename = paste(filename,args[3],sep="")
+filename = paste(filename,".txt",sep="")
 data_testing = read.table(filename,header=T,sep="\t")    
                                                 
 library(neuralnet)
@@ -94,7 +96,18 @@ names(nnet_train)[12] <- 'Negative'
 #nn <- neuralnet(Positive+Negative ~ X2 + X3 + X5 + X7 + X8, data=nnet_train, hidden=c(6),linear.output=FALSE,rep=1)
 #nn <- neuralnet(Positive+vecNegative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9, data=nnet_train, hidden=c(9), linear.output=FALSE, rep=1,startweights=w)
 #nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9, data=nnet_train, hidden=c(9), linear.output=FALSE, rep=1,startweights=w5)
-nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9,data=nnet_train,hidden=c(3),linear.output=FALSE,rep=1)        # 3 units in the hidden layer
+if (args[3] == "21") {
+	nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 ,data=nnet_train,hidden=c(3),linear.output=FALSE,rep=1)        # 3 units in the hidden layer	
+}
+if (args[3] == "19") {
+	nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 ,data=nnet_train,hidden=c(3),linear.output=FALSE,rep=1)        # 3 units in the hidden layer	
+}
+if (args[3] == "17") {
+	nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 ,data=nnet_train,hidden=c(3),linear.output=FALSE,rep=1)        # 3 units in the hidden layer	
+}
+if (args[3] == "15") {
+	nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 ,data=nnet_train,hidden=c(3),linear.output=FALSE,rep=1)        # 3 units in the hidden layer	
+}
 #nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9, data=nnet_train, hidden=c(4), linear.output=FALSE,rep=1,startweights=w32)
 #nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9, data=nnet_train, hidden=c(9), linear.output=FALSE, rep=1,startweights=w52)
 #nn <- neuralnet(Positive+Negative ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9, data=nnet_train, hidden=c(5),linear.output=FALSE,learningrate=0.001,threshold=0.01,algorithm="backprop")
@@ -144,5 +157,7 @@ vec2=c(vec2,avg)
 
 #sort(mypredict2[,1],decreasing=TRUE)           
 
-filename = paste(args[1], "Ann_output.txt", sep="")
+filename = paste(args[1], "Ann_output.", sep="")
+filename = paste(filename,args[3],sep="")
+filename = paste(filename,".txt",sep="")
 write.table(vec2,file = filename, sep = "\t", col.names = NA, qmethod = "double") 

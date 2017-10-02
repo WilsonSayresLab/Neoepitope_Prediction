@@ -359,7 +359,11 @@ wildType_Map = Patient_FILE_DATA[2]
 
 
 command = "python "+filepath+"/mhc_i/src/predict_binding.py netmhcpan " + argument[1] +" "+ argument[2] +" "+ inputFile + " > "  +   outputNetmhcpanFile
-command1 = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ argument[2] +" "+ inputFile + " > " + outputIEDBFile
+command8mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(8) +" "+ inputFile + " > " + outputIEDBFile
+command9mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+  str(9) +" "+ inputFile + " > " + outputIEDBFile
+command10mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(10) +" "+ inputFile + " > " + outputIEDBFile
+command11mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(11) +" "+ inputFile + " > " + outputIEDBFile
+
 
 #returncode = subprocess.call(command,shell=True)
 

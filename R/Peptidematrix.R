@@ -1,5 +1,7 @@
 args <- commandArgs(trailingOnly = TRUE)
-filename = paste(args[1], "transform_input.csv", sep="")
+filename = paste(args[1], "transform_input.", sep="")
+filename = paste(filename,args[3],sep="")
+filename = paste(filename,".csv",sep="")
 #data= read.table("H2Db CTL-test.csv",header=T,sep=",")
 #data= read.table("H2Kb eluted-test.csv",header=T,sep=",")
 #data= read.table("human-mouse self CTL.csv",header=T,sep=",")
@@ -76,5 +78,7 @@ for (k in 1:length(aa)){
   #matrixx[[k]]=data.frame(Name=data$Name[index_peptides],Peptide=data$Epitope[index_peptides],matrix)
   
 }
-filename = paste(args[1], "Ann_input.txt", sep="")
+filename = paste(args[1], "Ann_input.", sep="")
+filename = paste(filename,args[3],sep="")
+filename = paste(filename,".txt",sep="")
 write.table(matrixx[[1]],file =filename, sep = "\t", col.names = NA, qmethod = "double")
