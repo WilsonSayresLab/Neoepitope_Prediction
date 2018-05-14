@@ -108,14 +108,17 @@ class epitopes:
           value_ = []
           counter = 0
           ALL_LISTS = []
-          if("output_netmhcpan.txt" in fileName ):
+          if("output_netmhcpan" in fileName ):
             NetMHC = namedtuple("NetMHC", ("peptide","start","end","score"))
             NetMHC_TupleList = []
             NetMHC_Set= set()
-          if("output_IEDB.txt" in fileName ):
+          if("output_IEDB" in fileName ):
+            print "in True"
             IEDB = namedtuple("IEDB", ("peptide","start","end","score"))
             IEDB_TupleList = []
             IEDB_Set = set()
+          print "printing filename"
+          print fileName
           with open(fileName) as f:
                   for line in f:
                           if counter == 0:
@@ -127,7 +130,7 @@ class epitopes:
                           if("syfpeithi.txt" in  fileName):
                                        key_.append(tempLine[0].strip())
                                        value_.append(float(tempLine[1].strip()))
-                          if("output_netmhcpan.txt" in fileName ):
+                          if("output_netmhcpan" in fileName ):
                             peptideStr = tempLine[5].strip()
                             if  peptideStr not in NetMHC_Set:
                               NetMHC_Set.add(peptideStr)
@@ -135,19 +138,19 @@ class epitopes:
                               value_.append(float(tempLine[6].strip()))
                               netmhc = NetMHC(peptide = peptideStr, start = tempLine[2].strip(), end = tempLine[3].strip(), score = tempLine[6].strip())
                               NetMHC_TupleList.append(netmhc)
-                          if("output_IEDB.txt" in fileName):
+                          if("output_IEDB" in fileName):
                             peptideStr = tempLine[5].strip()
-                            if  peptideStr not in IEDB_Set:
+                            if  peptideStr not in IEDB_Set :
                               IEDB_Set.add(peptideStr)
                               key_.append(peptideStr)
-                              value_.append(float(tempLine[8].strip()))
-                              iedb = IEDB(peptide = peptideStr, start = tempLine[2].strip(), end = tempLine[3].strip(), score = tempLine[8].strip())
+                              value_.append(float(tempLine[14].strip()))
+                              iedb = IEDB(peptide = peptideStr, start = tempLine[2].strip(), end = tempLine[3].strip(), score = tempLine[14].strip())
                               IEDB_TupleList.append(iedb)
           map_values = dict(zip(key_,value_))
           ALL_LISTS.append(map_values)
-          if("output_IEDB.txt" in fileName ):
+          if("output_IEDB" in fileName ):
             ALL_LISTS.append(IEDB_TupleList)
-          if("output_netmhcpan.txt" in fileName ):
+          if("output_netmhcpan" in fileName ):
             ALL_LISTS.append(NetMHC_TupleList)
           return ALL_LISTS
           
@@ -284,14 +287,16 @@ class epitopes:
 # Create Sequence transcript map
 #############################################
      @staticmethod
-     def initializeDataSets(filepath):
+     def initializeDataSets(filepath,fileName):
       ALL_LISTS = []
       transcript_SET = set()
       mutant_Map = defaultdict(list)
       wildType_Map = defaultdict(list)
       transcript = ""
       counter = 0
-      with open(filepath + "MTWT_File.txt" ) as f:
+      print "MT-WT "
+      print fileName
+      with open(filepath + fileName ) as f:
         for line in f:
           data = line.split("\t")
           if data[0] == "MT":
@@ -339,30 +344,24 @@ filepath = os.path.dirname(os.path.realpath(__file__))
 hla_allele = argument[1].replace(":","-")
 outputFilePath = filepath + "/output/" + argument[5] + argument[4] + "/" + hla_allele +  "/"
 
-if not os.path.exists(outputFilePath):
-	os.makedirs(outputFilePath)
+
+
+seqLen = argument[2]
+peptideLen = (int(seqLen) / 2) + 1
+peptideLenStr = "."+ seqLen + ".txt"
 
 inputFilePath = filepath + "/peptides/"
-outputNetmhcpanFile = outputFilePath + "output_netmhcpan.txt"
-outputIEDBFile = outputFilePath + "output_IEDB.txt"
+outputNetmhcpanFile = outputFilePath + "output_netmhcpan"  + peptideLenStr
+outputIEDBFile= outputFilePath + "output_IEDB" + peptideLenStr
 rFilePath = filepath + "/R/"
-inputFile = inputFilePath + argument[4] + ".txt"
+inputFile = inputFilePath + argument[4] + "."+ seqLen+ ".txt"
 patientId = argument[4]
 tab = "\t"
 
 
-Patient_FILE_DATA = ep.initializeDataSets(filepath + "/output/" + argument[5] + argument[4]+ "/")
-transcript_SET = Patient_FILE_DATA[0]
-mutant_Map = Patient_FILE_DATA[1]
-wildType_Map = Patient_FILE_DATA[2]
+command = "python "+filepath+"/mhc_i/src/predict_binding.py netmhcpan " + argument[1] +" "+ argument[2] +" "+ inputFile + " > "  +   outputNetmhcpanFile 
+command1 = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(peptideLen) +" "+ inputFile + " > " + outputIEDBFile 
 
-
-
-command = "python "+filepath+"/mhc_i/src/predict_binding.py netmhcpan " + argument[1] +" "+ argument[2] +" "+ inputFile + " > "  +   outputNetmhcpanFile
-command8mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(8) +" "+ inputFile + " > " + outputIEDBFile
-command9mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+  str(9) +" "+ inputFile + " > " + outputIEDBFile
-command10mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(10) +" "+ inputFile + " > " + outputIEDBFile
-command11mer = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(11) +" "+ inputFile + " > " + outputIEDBFile
 
 
 #returncode = subprocess.call(command,shell=True)
@@ -372,22 +371,31 @@ method = "IEDB"
 
 if os.path.getsize(outputIEDBFile) ==0:
   method= "NETMHC"
-  commandnetMhc = "python "+filepath+"/mhc_i/src/predict_binding.py netmhcpan " + argument[1] +" "+ argument[2] +" "+ inputFile + " > " + outputIEDBFile
+  commandnetMhc = "python "+filepath+"/mhc_i/src/predict_binding.py netmhcpan " + argument[1] +" "+ str(peptideLen) +" "+ inputFile + " > " + outputIEDBFile
   returncode = subprocess.call(commandnetMhc,shell=True)
 
-
+'''
 ###################################################
 # get the Map of key and values
 ###################################################
 print "begining of IEDB"
 IEDB_top200= []
+IEDB_map = defaultdict(list)
+IEDB_tuples = defaultdict(list)
 if method == "IEDB":
   IEDB_data = ep.getMapwithValuesIEDB(outputIEDBFile)
 else: 
   IEDB_data = ep.getMapwithValues(outputIEDBFile)
-IEDB_map = IEDB_data[0]
-IEDB_tuples =  IEDB_data[1]
-sorted_IEDB = sorted(IEDB_map.iteritems(),key=operator.itemgetter(1))
+IEDB_map[seqLen] = IEDB_data[0]
+IEDB_tuples[seqLen] =  IEDB_data[1]
+#sorted_IEDB = sorted(IEDB_map.iteritems(),key=operator.itemgetter(1))
+print "printing IEDB data"
+print IEDB_data
+print "printing IEDB MAP data"
+print IEDB_map
+print "printing IEDB TUPLES data"
+print IEDB_tuples
+
 
 ###################################################
 # Transcript - peptide - min score 
@@ -397,8 +405,10 @@ IEDB_transcriptMap_WT = defaultdict(list)
 
 sameSeqTupleList= list()
 for t in transcript_SET:
-  IEDB_transcriptMap_MT[t] = ep.getLowestScore(mutant_Map[t],IEDB_map)
-  IEDB_transcriptMap_WT[t] = ep.getLowestScore(wildType_Map[t],IEDB_map)
+  IEDB_transcriptMap_MT[t][seqLen] = ep.getLowestScore(mutant_Map[t],IEDB_map[seqLen])
+  IEDB_transcriptMap_WT[t][seqLen] = ep.getLowestScore(wildType_Map[t],IEDB_map[seqLen])
+  print IEDB_transcriptMap_MT
+  print IEDB_transcriptMap_MT
   value = IEDB_transcriptMap_MT[t]
   value = value[0]
   peptide_tuple_MT = [item for item in IEDB_tuples if item.peptide == value]
@@ -489,3 +499,4 @@ fwrite.close()
 ###################################################
 # End of Program
 ###################################################
+'''
