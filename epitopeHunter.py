@@ -109,7 +109,7 @@ for index, patient in enumerate(patientSet):
                     for num in isomers:
                          filename = "TCGA-" + patient +"_Varscan_variants_filter.pass."+ str(num) +".peptide"
                          functions.writeInputFile(filepath + "/peptides/", filename, patient,str(num))
-                         proc = subprocess.Popen([sys.executable, 'epitope_new.py', hla, num , filename,  patient, outputFolder, syfpeithiStr, IEDBStr, netmhcpanStr])
+                         proc = subprocess.Popen([sys.executable, 'epitope.py', hla, num , filename,  patient, outputFolder, syfpeithiStr, IEDBStr, netmhcpanStr])
                          procs.append(proc)
                processPatient = False
                time.sleep(5)
