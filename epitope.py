@@ -43,7 +43,7 @@ class epitopes:
                          counter=counter+1
                          continue
                     else:
-                         counter = counter +1 
+                         counter = counter +1
                          templine = line.split("\t")
                          key_.append(templine[0].strip().replace("\"",""))
                          value_.append(float(templine[1].strip().replace("\"","")))
@@ -153,13 +153,13 @@ class epitopes:
           if("output_netmhcpan" in fileName ):
             ALL_LISTS.append(NetMHC_TupleList)
           return ALL_LISTS
-          
+
 ###################################################
      @staticmethod
      def writeNormFile(rFilePath, filepath,fileName,final_set,final_map):
           result = []
           key_ = []
-          value_ = []          
+          value_ = []
           fwrite = open(filepath + fileName + '_norm.csv','w')
           fwrite.write("Sequence,"+ fileName+ ".bind\n")
           for val in final_set:
@@ -264,7 +264,7 @@ class epitopes:
             return map_values
           else:
             return -1
-          
+
 
 ###################################################
      @staticmethod
@@ -326,7 +326,7 @@ class epitopes:
       return map_scores[0]
 
 
-          
+
 
 ###################################################
 argument = sys.argv
@@ -359,8 +359,8 @@ patientId = argument[4]
 tab = "\t"
 
 
-command = "python "+filepath+"/mhc_i/src/predict_binding.py netmhcpan " + argument[1] +" "+ argument[2] +" "+ inputFile + " > "  +   outputNetmhcpanFile 
-command1 = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(peptideLen) +" "+ inputFile + " > " + outputIEDBFile 
+command = "python "+filepath+"/mhc_i/src/predict_binding.py netmhcpan " + argument[1] +" "+ argument[2] +" "+ inputFile + " > "  +   outputNetmhcpanFile
+command1 = "python "+filepath+"/mhc_i/src/predict_binding.py IEDB_recommended " + argument[1] +" "+ str(peptideLen) +" "+ inputFile + " > " + outputIEDBFile
 
 
 
@@ -384,7 +384,7 @@ IEDB_map = defaultdict(list)
 IEDB_tuples = defaultdict(list)
 if method == "IEDB":
   IEDB_data = ep.getMapwithValuesIEDB(outputIEDBFile)
-else: 
+else:
   IEDB_data = ep.getMapwithValues(outputIEDBFile)
 IEDB_map[seqLen] = IEDB_data[0]
 IEDB_tuples[seqLen] =  IEDB_data[1]
@@ -398,7 +398,7 @@ print IEDB_tuples
 
 
 ###################################################
-# Transcript - peptide - min score 
+# Transcript - peptide - min score
 ###################################################
 IEDB_transcriptMap_MT = defaultdict(list)
 IEDB_transcriptMap_WT = defaultdict(list)
