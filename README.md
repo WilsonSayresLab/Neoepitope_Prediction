@@ -13,6 +13,6 @@ _**Steps**_
 	`cd mhc_i; ./configure`
 - Change directory to exit IEDB folder `cd ..`
 - Clone the github source code - `git clone https://github.com/WilsonSayresLab/Neoepitope_Prediction.git`
-- Add all the peptide files to the respective peptide folder 15mer, 17mer, 19mer and 21mer in the downloaded git folder. 
-- Add about 5-7 hla to the hla folder 
+- Add all the peptide files to the respective peptide folder 15mers, 17mers, 19mers and 21mers in the downloaded git folder. 
+- Add hlas to the hla folder 
 - Run the epitopeHunter.py by - `python epitopeHunter.py`.
